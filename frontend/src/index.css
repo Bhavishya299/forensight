@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+
+  /* Brand — dark intelligence navy */
+  --color-brand-50: #eef2f8;
+  --color-brand-100: #dce5f2;
+  --color-brand-200: #b9cbe4;
+  --color-brand-300: #8aa6cc;
+  --color-brand-400: #5a7fae;
+  --color-brand-500: #3b5f94;
+  --color-brand-600: #2a4a7a;
+  --color-brand-700: #223c63;
+  --color-brand-800: #1b2f4e;
+  --color-brand-900: #14233c;
+  --color-brand-950: #0c1626;
+
+  /* Cyber / cyan accent */
+  --color-cyan-brand: #38bdf8;
+  --color-teal-brand: #2dd4bf;
+
+  /* Dark shell surfaces */
+  --color-ink-950: #0a0f1a;
+  --color-ink-900: #0e1524;
+  --color-ink-850: #111a2d;
+  --color-ink-800: #16213a;
+  --color-ink-700: #1e2b47;
+  --color-ink-600: #2a3a5c;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #0a0f1a;
+  color: #d7e0ee;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Subtle data-grid texture on the main shell background */
+.app-surface {
+  background-color: #0a0f1a;
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Focus visibility for accessibility */
+:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+/* Subtle scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a3a5c;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3b5f94;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Recharts dark defaults */
+.recharts-cartesian-axis-tick text {
+  fill: #8aa6cc;
+  font-size: 11px;
+}
+.recharts-text {
+  fill: #5a7fae;
+}
+
+/* ---------- React Flow dark overrides ---------- */
+.react-flow__controls {
+  border: 1px solid #2a3a5c;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: none;
+}
+.react-flow__controls-button {
+  background: #111a2d;
+  border-bottom: 1px solid #1e2b47;
+  color: #8aa6cc;
+}
+.react-flow__controls-button:hover {
+  background: #16213a;
+  color: #d7e0ee;
+}
+.react-flow__controls-button svg {
+  fill: currentColor;
+}
+.react-flow__minimap {
+  background: #0e1524;
+  border: 1px solid #2a3a5c;
+  border-radius: 8px;
+}
+.react-flow__attribution {
+  background: transparent;
+}
+.react-flow__attribution a {
+  color: #5a7fae;
+}
+.react-flow__edge-path {
+  transition: stroke 0.15s ease;
+}
+.react-flow__node.selected .react-flow__node-default,
+.react-flow__node.selected > div {
+  border-color: rgba(56, 189, 248, 0.8);
+}
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #38bdf8 !important;
+}

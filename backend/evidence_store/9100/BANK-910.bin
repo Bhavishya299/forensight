@@ -1,0 +1,13 @@
+{
+    "id":  "BANK-910",
+    "description":  "Transfer record",
+    "source":  "BANK-RVC",
+    "addedBy":  "A. Sharma",
+    "type":  "BANKING",
+    "details":  {
+                    "amount":  "25000",
+                    "from":  "ACC-A",
+                    "to":  "ACC-B"
+                },
+    "status":  "Ready for analysis"
+}

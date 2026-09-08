@@ -1,0 +1,13 @@
+{
+    "id":  "CDR-910",
+    "description":  "Call detail record",
+    "source":  "TEL-910",
+    "addedBy":  "A. Sharma",
+    "type":  "CDR",
+    "details":  {
+                    "from":  "911",
+                    "to":  "912",
+                    "call":  "1min"
+                },
+    "status":  "Ready for analysis"
+}

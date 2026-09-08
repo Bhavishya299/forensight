@@ -1,0 +1,15 @@
+{
+    "id":  "CDR-045",
+    "addedBy":  "A. Sharma",
+    "type":  "Call Detail Record",
+    "source":  "CDR",
+    "description":  "Test outbound call record.",
+    "status":  "Ready for analysis",
+    "details":  {
+                    "entity1":  "Person A",
+                    "timestamp":  "2026-09-08 10:30",
+                    "description":  "Outbound call placed by Person A",
+                    "entity2":  "Person B"
+                },
+    "addedAt":  "2026-09-08 10:30"
+}

@@ -1,0 +1,14 @@
+{
+    "id":  "BANK-902",
+    "description":  "Suspicious transfer record",
+    "source":  "BANK-NXB",
+    "addedBy":  "A. Sharma",
+    "type":  "BANKING",
+    "details":  {
+                    "amount":  "50000",
+                    "from":  "ACC-1001",
+                    "to":  "ACC-2002",
+                    "note":  "flagged transfer"
+                },
+    "status":  "Ready for analysis"
+}

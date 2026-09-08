@@ -1,0 +1,11 @@
+{
+    "id":  "CDR-901",
+    "description":  "Call detail record",
+    "source":  "TEL-901",
+    "addedBy":  "A. Sharma",
+    "type":  "CDR",
+    "details":  {
+
+                },
+    "status":  "Ready for analysis"
+}
