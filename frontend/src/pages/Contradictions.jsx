@@ -1,14 +1,16 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
-import { Scale } from 'lucide-react'
+import { Scale, Trash2, Loader2 } from 'lucide-react'
 import {
   getContradictionsForCase,
   getContradictionById,
+  clearContradictions,
 } from '../store/analyticsStore.js'
 import { getEvidenceById } from '../store/caseStore.js'
 import PageContainer from '../components/layout/PageContainer.jsx'
 import PageHeader from '../components/dashboard/PageHeader.jsx'
 import Card from '../components/ui/Card.jsx'
+import Button from '../components/ui/Button.jsx'
 import EmptyState from '../components/ui/EmptyState.jsx'
 import AlertBanner from '../components/ui/AlertBanner.jsx'
 import LoadingState from '../components/ui/LoadingState.jsx'
@@ -23,9 +25,11 @@ const Contradictions = () => {
   const [loading, setLoading] = useState(true)
   const [active, setActive] = useState(null)
   const [activeEvidence, setActiveEvidence] = useState(null)
+  const [clearing, setClearing] = useState(false)
 
-  useEffect(() => {
+  const load = useCallback(() => {
     let cancelled = false
+    setLoading(true)
     getContradictionsForCase(id)
       .then((rows) => {
         if (cancelled) return
@@ -41,6 +45,20 @@ const Contradictions = () => {
       cancelled = true
     }
   }, [id])
+
+  useEffect(() => load(), [id, load])
+
+  const handleClear = async () => {
+    if (!items.length) return
+    if (!window.confirm(`Clear all contradiction intervals for this case? This cannot be undone.`)) return
+    setClearing(true)
+    try {
+      await clearContradictions(id)
+      load()
+    } finally {
+      setClearing(false)
+    }
+  }
 
   const sourceTypes = [
     ...new Set(items.flatMap((c) => c.sources || [])),
@@ -97,6 +115,21 @@ const Contradictions = () => {
           </span>
         }
         tagline={`Compare stated claims with independent evidence. Demo only — none are conclusions.`}
+        actions={
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={!items.length || clearing}
+            onClick={handleClear}
+          >
+            {clearing ? (
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+            ) : (
+              <Trash2 className="h-4 w-4" aria-hidden="true" />
+            )}
+            Clear intervals
+          </Button>
+        }
       />
 
       {loading ? (

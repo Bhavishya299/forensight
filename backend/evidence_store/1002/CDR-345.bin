@@ -1,0 +1,1 @@
+{"id":"CDR-345","type":"CDR","source":"CDR","description":"Call Person C → Person A","status":"Ready for analysis","addedAt":"2026-09-08 18:50","addedBy":"A. Sharma","details":{"from":"Person C","to":"Person A","direction":"OUTGOING","duration":"132","timestamp":"2026-09-08 19:26:00","location":"Sector X","sourceFile":"cdr.csv"}}

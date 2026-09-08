@@ -75,6 +75,16 @@ export async function addEvidenceItem(caseId, item) {
   return { id: res.data.id, caseId: res.data.caseId }
 }
 
+export async function deleteEvidenceItem(caseId, id) {
+  await api.delete(`/cases/${caseId}/evidence/${encodeURIComponent(id)}`)
+}
+
+export async function deleteEvidenceMany(caseId, source) {
+  const params = source ? { source } : {}
+  const res = await api.delete(`/cases/${caseId}/evidence`, { params })
+  return res.data
+}
+
 export function generateEvidenceId(source = 'SRC') {
   const prefix = String(source).replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase() || 'SRC'
   return `${prefix}-${String(Math.floor(Math.random() * 900) + 100)}`

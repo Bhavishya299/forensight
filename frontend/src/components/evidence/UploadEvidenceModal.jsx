@@ -30,7 +30,9 @@ const COLUMN_ALIASES = {
   entity2: ['entity2', 'entity b', 'entity_b', 'counterparty', 'related', 'to entity', 'to_entity', 'secondary'],
   location: ['location', 'place', 'city', 'site', 'area', 'geolocation', 'geo'],
   timestamp: ['timestamp', 'datetime', 'date', 'time', 'event time', 'event_time', 'when', 'ts'],
-  description: ['description', 'notes', 'note', 'comment', 'details', 'narrative'],
+  description: ['description', 'notes', 'note', 'comment', 'details', 'narrative', 'statement', 'claim', 'statement_text'],
+  start: ['start', 'start time', 'start_time', 'begin', 'from time', 'from_time', 'window start', 'claim start', 'claim_start'],
+  end: ['end', 'end time', 'end_time', 'until', 'to time', 'to_time', 'window end', 'claim end', 'claim_end'],
 }
 
 function nowStamp() {

@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
-import { Search, Upload, FileSearch, ChevronRight } from 'lucide-react'
-import { getEvidenceForCase } from '../store/caseStore.js'
+import { Search, Upload, FileSearch, ChevronRight, Trash2, Loader2 } from 'lucide-react'
+import { getEvidenceForCase, deleteEvidenceItem, deleteEvidenceMany } from '../store/caseStore.js'
 import PageContainer from '../components/layout/PageContainer.jsx'
 import PageHeader from '../components/dashboard/PageHeader.jsx'
 import Card from '../components/ui/Card.jsx'
@@ -27,6 +27,9 @@ const Evidence = () => {
   const [status, setStatus] = useState('All')
   const [showUpload, setShowUpload] = useState(false)
   const [activeItem, setActiveItem] = useState(null)
+  const [deletingId, setDeletingId] = useState(null)
+  const [bulkDeleting, setBulkDeleting] = useState(false)
+  const [category, setCategory] = useState('')
 
   useEffect(() => {
     let cancelled = false
@@ -101,6 +104,60 @@ const Evidence = () => {
     setItems(refreshed || [])
   }
 
+  const handleDeleteItem = async (item, e) => {
+    e.stopPropagation()
+    if (!window.confirm(`Delete evidence ${item.id}?`)) return
+    setDeletingId(item.id)
+    try {
+      await deleteEvidenceItem(id, item.id)
+      const refreshed = await getEvidenceForCase(id)
+      setItems(refreshed || [])
+      if (activeItem?.id === item.id) setActiveItem(null)
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
+  const refresh = async () => {
+    const refreshed = await getEvidenceForCase(id)
+    setItems(refreshed || [])
+  }
+
+  const handleDeleteCategory = async () => {
+    if (!category) return
+    const label = SOURCE_META[category]?.label || category
+    if (!window.confirm(`Delete all ${label} evidence (${items.filter((i) => i.source === category).length} record(s))?`)) return
+    setBulkDeleting(true)
+    try {
+      await deleteEvidenceMany(id, category)
+      setCategory('')
+      await refresh()
+    } finally {
+      setBulkDeleting(false)
+    }
+  }
+
+  const handleDeleteAll = async () => {
+    if (!items.length) return
+    if (!window.confirm(`Delete all ${items.length} evidence records in this case?`)) return
+    setBulkDeleting(true)
+    try {
+      await deleteEvidenceMany(id)
+      await refresh()
+    } finally {
+      setBulkDeleting(false)
+    }
+  }
+
+  const categoryOptions = useMemo(
+    () =>
+      [...new Set(items.map((i) => i.source))].sort().map((key) => ({
+        value: key,
+        label: SOURCE_META[key]?.label || key,
+      })),
+    [items]
+  )
+
   const clearFilters = () => {
     setQuery('')
     setSource('All')
@@ -125,10 +182,44 @@ const Evidence = () => {
         title="Evidence"
         tagline={`Evidence records and traceability · Case #${id}`}
         actions={
-          <Button onClick={() => setShowUpload(true)}>
-            <Upload className="h-4 w-4" aria-hidden="true" />
-            Upload evidence
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-2">
+              <Select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                options={[{ value: '', label: 'Delete by category…' }, ...categoryOptions]}
+                aria-label="Delete evidence by category"
+                disabled={!categoryOptions.length}
+                className="w-52"
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!category || bulkDeleting}
+                onClick={handleDeleteCategory}
+              >
+                {bulkDeleting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                ) : (
+                  <Trash2 className="h-4 w-4" aria-hidden="true" />
+                )}
+                Delete
+              </Button>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!items.length || bulkDeleting}
+              onClick={handleDeleteAll}
+            >
+              <Trash2 className="h-4 w-4" aria-hidden="true" />
+              Delete all evidence
+            </Button>
+            <Button onClick={() => setShowUpload(true)}>
+              <Upload className="h-4 w-4" aria-hidden="true" />
+              Upload evidence
+            </Button>
+          </div>
         }
       />
 
@@ -220,10 +311,23 @@ const Evidence = () => {
                         {item.addedAt}
                       </td>
                       <td className="px-4 py-3">
-                        <ChevronRight
-                          className="h-4 w-4 text-slate-500"
-                          aria-hidden="true"
-                        />
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            type="button"
+                            title={`Delete ${item.id}`}
+                            aria-label={`Delete ${item.id}`}
+                            disabled={deletingId === item.id}
+                            onClick={(e) => handleDeleteItem(item, e)}
+                            className="rounded-md p-1.5 text-slate-500 transition-colors hover:bg-rose-500/10 hover:text-rose-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 disabled:opacity-40"
+                          >
+                            {deletingId === item.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                            ) : (
+                              <Trash2 className="h-4 w-4" aria-hidden="true" />
+                            )}
+                          </button>
+                          <ChevronRight className="h-4 w-4 text-slate-500" aria-hidden="true" />
+                        </div>
                       </td>
                     </tr>
                   ))}

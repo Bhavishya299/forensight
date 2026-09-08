@@ -19,6 +19,7 @@ import hashlib
 import json
 import re
 from datetime import datetime
+from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile, status
 from sqlalchemy import func
@@ -397,3 +398,74 @@ async def upload_evidence_file(
     )
 
     return {"id": row.evidence_id, "caseId": case_id, "filename": file.filename}
+
+
+@router.delete("/{case_id}/evidence", status_code=status.HTTP_200_OK)
+def delete_evidence_many(
+    case_id: str,
+    source: str | None = None,
+    db: Session = Depends(get_db),
+    user: User = Depends(WRITE_ROLES),
+):
+    """Delete all evidence for a case, or only one source category."""
+    _ensure_case(db, case_id)
+    query = db.query(EvidenceRecord).filter(EvidenceRecord.case_id == case_id)
+    if source:
+        query = query.filter(EvidenceRecord.source == source)
+    rows = query.all()
+
+    deleted = 0
+    for row in rows:
+        if row.stored_path:
+            try:
+                Path(row.stored_path).unlink(missing_ok=True)
+            except OSError:
+                pass
+        db.delete(row)
+        deleted += 1
+
+    _refresh_case_counts(db, case_id)
+    record_audit(
+        db,
+        user=user,
+        action="EVIDENCE_DELETED" if source else "EVIDENCE_CLEARED",
+        target=f"CASE #{case_id}",
+        detail=(
+            f"Deleted {deleted} evidence record(s) for {source} in case #{case_id}."
+            if source
+            else f"Cleared all {deleted} evidence records in case #{case_id}."
+        ),
+        status="SUCCESS",
+        metadata={"case_number": case_id, "source": source},
+    )
+    return {"ok": True, "deleted": deleted, "caseId": case_id, "source": source}
+
+
+@router.delete("/{case_id}/evidence/{evidence_id}", status_code=status.HTTP_200_OK)
+def delete_evidence(
+    case_id: str,
+    evidence_id: str,
+    db: Session = Depends(get_db),
+    user: User = Depends(WRITE_ROLES),
+):
+    _ensure_case(db, case_id)
+    row = _get_row_or_404(db, case_id, evidence_id)
+    if row.stored_path:
+        try:
+            Path(row.stored_path).unlink(missing_ok=True)
+        except OSError:
+            pass
+    _refresh_case_counts(db, case_id)
+    evidence_id = row.evidence_id
+    source = row.source
+    db.delete(row)
+    record_audit(
+        db,
+        user=user,
+        action="EVIDENCE_DELETED",
+        target=evidence_id,
+        detail=f"Evidence {evidence_id} deleted from case #{case_id} ({source}).",
+        status="SUCCESS",
+        metadata={"case_number": case_id},
+    )
+    return {"ok": True, "id": evidence_id, "caseId": case_id}

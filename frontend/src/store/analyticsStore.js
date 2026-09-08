@@ -32,3 +32,8 @@ export async function getContradictionById(caseId, contradictionId) {
   const rows = await getContradictionsForCase(caseId)
   return rows.find((c) => c.id === contradictionId) || null
 }
+
+export async function clearContradictions(caseId) {
+  const res = await api.delete(`/cases/${caseId}/contradictions`)
+  return res.data
+}

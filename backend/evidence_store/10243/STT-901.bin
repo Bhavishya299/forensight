@@ -1,0 +1,17 @@
+{
+    "id":  "STT-901",
+    "addedBy":  "A. Sharma",
+    "type":  "STATEMENTS",
+    "source":  "STATEMENTS",
+    "description":  "Person Q was at Sector A between 10:00 and 11:00",
+    "status":  "Ready for analysis",
+    "details":  {
+                    "statement":  "Person Q was at Sector A between 10:00 and 11:00",
+                    "entity1":  "Person Q",
+                    "timestamp":  "2026-09-08 10:00:00",
+                    "start":  "10:00",
+                    "end":  "11:00",
+                    "location":  "Sector A"
+                },
+    "addedAt":  "2026-09-08 10:00"
+}

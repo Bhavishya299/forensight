@@ -61,6 +61,15 @@ def _hhmm(value: str) -> str | None:
     return f"{hour:02d}:{minute:02d}"
 
 
+def _window(value) -> str:
+    """Normalize a structured window value like '1000', '10', or '10:15 AM'."""
+    value = str(value or "").strip()
+    m = re.match(r"^(\d{1,2})(\d{2})$", value)
+    if m and int(m.group(2)) < 60:
+        return f"{int(m.group(1)):02d}:{m.group(2)}"
+    return value
+
+
 def _within(start: str | None, end: str | None, time_value: str) -> bool:
     if not start or not end:
         return True
@@ -108,8 +117,19 @@ def rebuild_contradictions(
     for row in statements:
         text = _text(row)
         parsed = nlp_engine.parse_claim(text)
+        details_c = decrypt_json(row.details_enc) or {}
         if not parsed or not parsed.get("location"):
-            continue
+            # Structured fallback: claim metadata supplied as columns
+            # (location / start / end) instead of a prose sentence.
+            loc = details_c.get("location")
+            if not loc:
+                continue
+            parsed = {
+                "location": str(loc),
+                "start": _hhmm(_window(details_c.get("start") or "")),
+                "end": _hhmm(_window(details_c.get("end") or "")),
+                "kind": "presence",
+            }
         claimed_rows.append({"claim": row, "parsed": parsed})
 
     independent = (
@@ -150,7 +170,10 @@ def rebuild_contradictions(
             continue
 
         claim_detail = decrypt_json(claim_row.details_enc) or {}
-        entities = [claim_detail.get("subject") or claim_detail.get("entities", [claim_row.created_by or "Person A"])[0] if isinstance(claim_detail.get("entities"), list) and claim_detail.get("entities") else "Person A"] + entities
+        claimed = claim_detail.get("subject") or claim_detail.get("entity1") or claim_detail.get("entity2")
+        if not claimed and isinstance(claim_detail.get("entities"), list) and claim_detail.get("entities"):
+            claimed = claim_detail["entities"][0]
+        entities = [claimed or claim_row.created_by or "Person A"] + entities
         entities = list(dict.fromkeys([e for e in entities if isinstance(e, str) and e]))
         entities = entities[:8]
         sources = ["STATEMENTS"] + [m["source"] for m in matches]
