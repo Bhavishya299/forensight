@@ -87,13 +87,15 @@ def _generate(db: Session, case_id: str, events: list[dict]) -> list[dict]:
             b_ents = _labels(b)
             if a_ents == b_ents:
                 continue
+            if not a_ents or not b_ents:
+                continue
             connection = f"{a_ents[-1]} → {b_ents[-1]}"
             key = tuple(sorted([connection, ", ".join(a_ents) if len(a_ents) < len(b_ents) else ", ".join(b_ents)]))
             if key in edges:
                 continue
             windows = f"{a['time']} – {b['time']}"
             links.append({
-                "id": f"WL-{counter:02d}",
+                "id": f"WL-{case_id}-{counter:02d}",
                 "caseId": case_id,
                 "typeLabel": "Potential temporal proximity",
                 "confidence": "Medium" if gap_min <= 10 else "Low",

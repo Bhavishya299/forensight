@@ -177,10 +177,10 @@ def make_event_id(source: str, timestamp: str, case_id: str) -> str:
         return f"evt-{case_id}-{len(timestamp)}"
     digits = re.sub(r"\D", "", timestamp)
     if source == "CCTV" and len(digits) >= 6:
-        return f"evt-cctv-{digits[-6:]}"
+        return f"evt-cctv-{case_id}-{digits[-6:]}"
     if len(digits) >= 4:
-        return f"evt-{digits[-4:]}"
-    return f"evt-{digits or '0000'}"
+        return f"evt-{case_id}-{digits[-4:]}"
+    return f"evt-{case_id}-{digits or '0000'}"
 
 
 def normalize_case(db: Session, case_id: str) -> list[EventRecord]:

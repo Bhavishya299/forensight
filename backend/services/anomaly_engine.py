@@ -294,7 +294,7 @@ def rebuild_alerts(
                 "description": "Device, network, and call records cluster within a short evening window.",
                 "reason": "Multiple source types produced records inside a short span with no comparable density in adjacent hours.",
                 "timestamp": window["start"],
-                "entities": sorted({ev.get("entity1") or ev.get("entity2") for ev in presence}),
+                "entities": sorted({ev.get("entity1") or ev.get("entity2") for ev in presence if ev.get("entity1") or ev.get("entity2")}),
                 "evidenceIds": [ev["evidence_id"] for ev in presence if ev.get("evidence_id")],
                 "primaryEvidence": presence[0]["evidence_id"] if presence and presence[0].get("evidence_id") else None,
                 "sourceTypes": sorted({ev["source"] for ev in presence}),
@@ -378,10 +378,10 @@ def rebuild_alerts(
                 "metadata": {"correlationLabel": "2 source types"},
             })
 
-    # Assign deterministic public ids (al-101, al-102, ...) in stable order.
+    # Assign deterministic public ids (al-{case}-101, ...) in stable order.
     rows = []
     for i, data in enumerate(generated, start=101):
-        alert_id = f"al-{i}"
+        alert_id = f"al-{case_id}-{i}"
         row = AlertRecord(
             id=alert_id,
             case_id=case_id,

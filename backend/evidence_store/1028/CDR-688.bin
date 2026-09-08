@@ -1,0 +1,1 @@
+{"id":"CDR-688","type":"CDR","source":"CDR","description":"Call Person B → Person C","status":"Ready for analysis","addedAt":"2026-09-08 17:49","addedBy":"A. Sharma","details":{"from":"Person B","to":"Person C","direction":"OUTGOING","duration":"175","timestamp":"2026-09-08 19:42:00","location":"Sector Y","sourceFile":"FORENSIGHT_CDR.csv"}}

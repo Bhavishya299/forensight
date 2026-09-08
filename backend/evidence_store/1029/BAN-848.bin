@@ -1,0 +1,1 @@
+{"id":"BAN-848","type":"BANKING","source":"BANKING","description":"Transfer Account-B → Account-C","status":"Ready for analysis","addedAt":"2026-09-08 17:40","addedBy":"A. Sharma","details":{"senderAccount":"Account-B","receiverAccount":"Account-C","amount":"125000","timestamp":"2026-09-08 18:16:00","location":"Sector X","sourceFile":"banking.csv"}}

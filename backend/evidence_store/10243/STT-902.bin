@@ -1,0 +1,16 @@
+{
+    "id":  "STT-902",
+    "addedBy":  "A. Sharma",
+    "type":  "STATEMENTS",
+    "source":  "STATEMENTS",
+    "description":  "Alibi claim",
+    "status":  "Ready for analysis",
+    "details":  {
+                    "subject":  "Person Q",
+                    "claim":  "was elsewhere",
+                    "end":  "1100",
+                    "location":  "Sector A",
+                    "start":  "1000"
+                },
+    "addedAt":  "2026-09-08 10:05"
+}

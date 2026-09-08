@@ -1,0 +1,1 @@
+{"id":"BAN-104","type":"BANKING","source":"BANKING","description":"Transfer Account-D → Account-E","status":"Ready for analysis","addedAt":"2026-09-08 18:15","addedBy":"A. Sharma","details":{"senderAccount":"Account-D","receiverAccount":"Account-E","amount":"15000","timestamp":"2026-09-08 21:15:00","location":"Sector Z","sourceFile":"banking.csv"}}

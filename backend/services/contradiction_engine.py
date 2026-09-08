@@ -156,7 +156,7 @@ def rebuild_contradictions(
         sources = ["STATEMENTS"] + [m["source"] for m in matches]
 
         generated.append({
-            "id": f"ct-{100 + counter:03d}",
+            "id": f"ct-{case_id}-{100 + counter:03d}",
             "caseId": case_id,
             "severity": "High" if len(matches) >= 3 else "Medium",
             "status": "Requires review",
