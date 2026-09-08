@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { Search, Upload, FileSearch, ChevronRight } from 'lucide-react'
-import { getEvidenceForCase, addEvidenceItem } from '../store/caseStore.js'
+import { getEvidenceForCase } from '../store/caseStore.js'
 import PageContainer from '../components/layout/PageContainer.jsx'
 import PageHeader from '../components/dashboard/PageHeader.jsx'
 import Card from '../components/ui/Card.jsx'
@@ -96,11 +96,9 @@ const Evidence = () => {
     [items]
   )
 
-  const handleUploaded = async (item) => {
-    await addEvidenceItem(id, item)
+  const handleUploaded = async () => {
     const refreshed = await getEvidenceForCase(id)
     setItems(refreshed || [])
-    setShowUpload(false)
   }
 
   const clearFilters = () => {

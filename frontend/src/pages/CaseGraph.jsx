@@ -46,6 +46,7 @@ import EmptyState from '../components/ui/EmptyState.jsx'
 import api from '../services/api.js'
 import { getEvidenceById, getCaseById } from '../store/caseStore.js'
 import { getAlertsForCase } from '../store/analyticsStore.js'
+import { onAnalysisDone } from '../store/analysisBus.js'
 
 const GraphPage = () => {
   const { id } = useParams()
@@ -65,6 +66,7 @@ const GraphPage = () => {
   // Relationship-alert derived weak-link signals
   const [alertsLoading, setAlertsLoading] = useState(true)
   const [caseWeakLinks, setCaseWeakLinks] = useState([])
+  const [analysisTick, setAnalysisTick] = useState(0)
 
   const nodeTypes = useMemo(() => ({ entity: EntityNode }), [])
   const edgeTypes = useMemo(() => ({ relationship: RelationshipEdge }), [])
@@ -111,7 +113,7 @@ const GraphPage = () => {
     return () => {
       cancelled = true
     }
-  }, [id])
+  }, [id, analysisTick])
 
   // Case weak-link signals come from the relationship alerts; map them
   // to the shape the weak-link UI consumes.
@@ -148,6 +150,12 @@ const GraphPage = () => {
     return () => {
       cancelled = true
     }
+  }, [id, analysisTick])
+
+  useEffect(() => {
+    return onAnalysisDone((caseId) => {
+      if (String(caseId) === String(id)) setAnalysisTick((t) => t + 1)
+    })
   }, [id])
 
   const nodeById = useMemo(() => Object.fromEntries(nodes.map((n) => [n.id, n])), [nodes])

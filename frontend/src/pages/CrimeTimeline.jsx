@@ -17,6 +17,7 @@ import CriticalEventWindow from '../components/timeline/CriticalEventWindow.jsx'
 import EvidenceDetailDrawer from '../components/evidence/EvidenceDetailDrawer.jsx'
 import { SOURCE_META } from '../config/sourceMeta.js'
 import { getEvidenceById, getCaseById } from '../store/caseStore.js'
+import { onAnalysisDone } from '../store/analysisBus.js'
 
 function toMinutes(t) {
   const [h, m] = t.split(':').map(Number)
@@ -59,6 +60,7 @@ const CrimeTimeline = () => {
   const [typeFilter, setTypeFilter] = useState('All')
   const [selectedEvent, setSelectedEvent] = useState(null)
   const [evidenceItem, setEvidenceItem] = useState(null)
+  const [analysisTick, setAnalysisTick] = useState(0)
 
   useEffect(() => {
     let cancelled = false
@@ -85,6 +87,12 @@ const CrimeTimeline = () => {
     return () => {
       cancelled = true
     }
+  }, [id, analysisTick])
+
+  useEffect(() => {
+    return onAnalysisDone((caseId) => {
+      if (String(caseId) === String(id)) setAnalysisTick((t) => t + 1)
+    })
   }, [id])
 
   const entityNames = useMemo(

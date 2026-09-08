@@ -228,6 +228,7 @@ const CaseWorkspaceLayout = () => {
       <AnalysisModal
         open={showAnalysis}
         onClose={() => setShowAnalysis(false)}
+        caseId={id}
         caseName={`Case #${caseData.id}`}
       />
     </div>

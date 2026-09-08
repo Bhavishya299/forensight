@@ -6,6 +6,7 @@ import {
   getAlertById,
 } from '../store/analyticsStore.js'
 import { getEvidenceById } from '../store/caseStore.js'
+import { onAnalysisDone } from '../store/analysisBus.js'
 import PageContainer from '../components/layout/PageContainer.jsx'
 import PageHeader from '../components/dashboard/PageHeader.jsx'
 import Card from '../components/ui/Card.jsx'
@@ -33,6 +34,7 @@ const Alerts = () => {
   const [status, setStatus] = useState('All')
   const [source, setSource] = useState('All')
   const [filtersOpen, setFiltersOpen] = useState(true)
+  const [analysisTick, setAnalysisTick] = useState(0)
 
   useEffect(() => {
     let cancelled = false
@@ -47,6 +49,12 @@ const Alerts = () => {
     return () => {
       cancelled = true
     }
+  }, [id, analysisTick])
+
+  useEffect(() => {
+    return onAnalysisDone((caseId) => {
+      if (String(caseId) === String(id)) setAnalysisTick((t) => t + 1)
+    })
   }, [id])
 
   const typeOptions = useMemo(

@@ -1,0 +1,17 @@
+{
+    "id":  "CDR-312",
+    "addedBy":  "A. Sharma",
+    "type":  "CDR",
+    "source":  "CDR",
+    "description":  "Call 9123456780 -\u003e 9000000001",
+    "status":  "Ready for analysis",
+    "details":  {
+                    "direction":  "out",
+                    "timestamp":  "2026-09-08 15:12:00",
+                    "to":  "9000000001",
+                    "from":  "9123456780",
+                    "sourceFile":  "CDR.csv",
+                    "duration":  "95"
+                },
+    "addedAt":  "2026-09-08 15:10"
+}
